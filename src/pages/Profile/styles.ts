@@ -55,87 +55,28 @@ const SocialInfo = styled.ul`
   justify-content: space-evenly;
   margin-top: 2rem;
 
-  button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
+  a {
     font-size: 1.5rem;
     color: white;
+    text-decoration: none;
     font-family: 'Righteous', sans-serif;
     transition: transform 200ms;
+    display: block;
     &:hover {
       transform: scale(1.1);
     }
-
     @media (min-width: 576px) {
       font-size: 1.8rem;
     }
   }
 `
 
-const RepositoriesCards = styled.section`
-  width: 90%;
-  margin: 0 auto 2rem;
-  max-width: 80rem;
-
-  a {
-    text-decoration: none;
-    display: block;
-    margin-bottom: 1.2rem;
-  }
-`
-
-const RepositoryCard = styled.article`
-  background-color: var(--gray);
-  padding: 1.5rem 2rem;
-  border-radius: 0.5rem;
-  width: 100%;
-  margin: 0 auto;
+const ErrorMessage = styled.h1`
+  text-align: center;
+  margin: 5rem 0;
+  font-size: 2.5rem;
+  font-family: 'Righteous', sans-serif;
   color: white;
-  h1 {
-    font-family: 'Righteous', sans-serif;
-    font-size: 2.2rem;
-    font-weight: normal;
-  }
-  div {
-    display: flex;
-    justify-content: space-between;
-  }
-  p {
-    margin: 1.5rem 0 3rem;
-  }
-  p,
-  span {
-    font-family: 'Rubik', sans-serif;
-    font-size: 1.5rem;
-  }
 `
 
-const ForksAndStars = styled.div`
-  display: flex;
-  gap: 2rem;
-  button {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    color: white;
-    font-size: 1.5rem;
-    font-family: 'Rubik', sans-serif;
-    img {
-      height: 1.8rem;
-    }
-  }
-`
-
-export {
-  ProfileHeader,
-  Avatar,
-  ProfileInfo,
-  SocialInfo,
-  RepositoriesCards,
-  RepositoryCard,
-  ForksAndStars
-}
+export { ProfileHeader, Avatar, ProfileInfo, SocialInfo, ErrorMessage }

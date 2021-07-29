@@ -1,63 +1,98 @@
 import React from 'react'
+import { gql, useQuery } from '@apollo/client'
+import { useParams } from 'react-router'
 
-import forkIcon from '../../assets/images/forkIcon.svg'
-import starIcon from '../../assets/images/starIcon.svg'
-import meAvatar from '../../assets/avatarme.jpeg'
+import Repositories from '../../components/Repositories'
+import Loading from '../../components/Loading'
 import {
   ProfileHeader,
   Avatar,
   ProfileInfo,
   SocialInfo,
-  RepositoriesCards,
-  RepositoryCard,
-  ForksAndStars
+  ErrorMessage
 } from './styles'
 
+const query = gql`
+  query User($login: String!) {
+    user(login: $login) {
+      name
+      avatarUrl
+      bio
+      followers {
+        totalCount
+      }
+      following {
+        totalCount
+      }
+      starredRepositories {
+        totalCount
+      }
+    }
+  }
+`
+
 const Profile: React.FC = () => {
+  const profileName = useParams<{ profilename: string }>().profilename
+  const { loading, error, data } = useQuery(query, {
+    variables: { login: profileName }
+  })
+
   return (
     <>
-      <ProfileHeader>
-        <ProfileInfo>
-          <Avatar src={meAvatar} alt="" />
-          <div>
-            <h1>Wellington Pacheco</h1>
-            <p>Science Computer student | Trying to be a fullstack dev</p>
-          </div>
-        </ProfileInfo>
-        <SocialInfo>
-          <li>
-            <button>3 followers</button>
-          </li>
-          <li>
-            <button>0 following</button>
-          </li>
-          <li>
-            <button>12 stars</button>
-          </li>
-        </SocialInfo>
-      </ProfileHeader>
-      <RepositoriesCards>
-        <a href="#">
-          <RepositoryCard>
-            <div>
-              <h1>react-chat</h1>
-              <ForksAndStars>
-                <button>
-                  <img src={forkIcon} alt="Forks" /> 3
-                </button>
-                <button>
-                  <img src={starIcon} alt="Stars" /> 0
-                </button>
-              </ForksAndStars>
-            </div>
-            <p>Realtime private chat</p>
-            <div>
-              <span>Typescript</span>
-              <span>Updated 15 hours ago</span>
-            </div>
-          </RepositoryCard>
-        </a>
-      </RepositoriesCards>
+      {loading && <Loading />}
+      {!loading && error && (
+        <ErrorMessage>
+          {error.message.startsWith(
+            'Could not resolve to a User with the login of'
+          )
+            ? 'Profile not found'
+            : 'Something went wrong'}
+        </ErrorMessage>
+      )}
+
+      {!error && data && (
+        <>
+          <ProfileHeader>
+            <ProfileInfo>
+              <Avatar src={data.user.avatarUrl} alt={profileName} />
+              <div>
+                <h1>{data.user.name}</h1>
+                <p>{data.user.bio}</p>
+              </div>
+            </ProfileInfo>
+            <SocialInfo>
+              <li>
+                <a
+                  href={`https://github.com/${profileName}?tab=followers`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {data.user.followers.totalCount} followers
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`https://github.com/${profileName}?tab=following`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {data.user.following.totalCount} following
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`https://github.com/${profileName}?tab=stars`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {data.user.starredRepositories.totalCount} stars
+                </a>
+              </li>
+            </SocialInfo>
+          </ProfileHeader>
+          <Repositories profileName={profileName} />
+        </>
+      )}
     </>
   )
 }
